@@ -1,4 +1,6 @@
 menu = """
+[u] Criar usuário
+[a] Criar conta corrente
 
 [d] Depositar
 [s] Sacar
@@ -7,11 +9,26 @@ menu = """
 
 => """
 
+users = []
+
 saldo = 0
 limite = 500
 extrato = ""
 numero_saques = 0
 LIMITE_SAQUES = 3
+
+def criar_usuario(*, valor, users):
+    nome = input("Digite o seu nome: ")
+    data_de_nascimento = input("Digite a sua data de nascimento (formato: dd/mm/yyyy): ")
+    endereco = input("Digite o seu endereço (logradouro, nº - bairro - cidade/sigla estado): ")
+    users.append({
+        "Nome": nome,
+        "Data de nascimento": data_de_nascimento,
+        "CPF": valor,
+        "Endereço": endereco
+    })
+    print(f"Usuário {valor} cadastrado com sucesso!")
+    return users
 
 def depositar(*, valor, saldo, extrato):
     if valor > 0:
@@ -57,7 +74,20 @@ while True:
 
     opcao = input(menu)
 
-    if opcao == "d":
+    if opcao == "u":
+        valor = input("Digite seu CPF (apenas números): ")
+        for user in users:
+            if user.get("CPF") == valor:
+                print("Operação falhou! CPF já está cadastrado no sistema!")
+                break
+        else:
+            users = criar_usuario(valor=valor, users=users)
+            print(users)
+
+    elif opcao == "a":
+        print()
+
+    elif opcao == "d":
         valor = float(input("Informe o valor do depósito: "))
         resultado = depositar(valor=valor, saldo=saldo, extrato=extrato)
         if resultado:
