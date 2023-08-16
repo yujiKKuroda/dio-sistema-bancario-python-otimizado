@@ -13,19 +13,16 @@ extrato = ""
 numero_saques = 0
 LIMITE_SAQUES = 3
 
-def depositar():
-    valor = float(input("Informe o valor do depósito: "))
-
+def depositar(*, valor, saldo, extrato):
     if valor > 0:
         saldo += valor
         extrato += f"Depósito: R$ {valor:.2f}\n"
-
+        return saldo, extrato
     else:
         print("Operação falhou! O valor informado é inválido.")
+        return False
 
-def sacar():
-    valor = float(input("Informe o valor do saque: "))
-
+def sacar(valor, saldo, limite, numero_saques, LIMITE_SAQUES, extrato, /):
     excedeu_saldo = valor > saldo
     excedeu_limite = valor > limite
     excedeu_saques = numero_saques >= LIMITE_SAQUES
@@ -43,11 +40,14 @@ def sacar():
         saldo -= valor
         extrato += f"Saque: R$ {valor:.2f}\n"
         numero_saques += 1
+        return saldo, extrato
 
     else:
         print("Operação falhou! O valor informado é inválido.")
+    
+    return False
 
-def extrato():
+def tirar_extrato(*, extrato, saldo):
     print("\n================ EXTRATO ================")
     print("Não foram realizadas movimentações." if not extrato else extrato)
     print(f"\nSaldo: R$ {saldo:.2f}")
@@ -58,13 +58,21 @@ while True:
     opcao = input(menu)
 
     if opcao == "d":
-        depositar()
+        valor = float(input("Informe o valor do depósito: "))
+        resultado = depositar(valor=valor, saldo=saldo, extrato=extrato)
+        if resultado:
+            saldo = resultado[0]
+            extrato = resultado[1]
 
     elif opcao == "s":
-        sacar()
+        valor = float(input("Informe o valor do saque: "))
+        resultado = sacar(valor, saldo, limite, numero_saques, LIMITE_SAQUES, extrato)
+        if resultado:
+            saldo = resultado[0]
+            extrato = resultado[1]
 
     elif opcao == "e":
-        extrato()
+        tirar_extrato(extrato=extrato, saldo=saldo)
 
     elif opcao == "q":
         break
