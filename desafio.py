@@ -40,7 +40,7 @@ def sacar(valor, saldo, limite, numero_saques, LIMITE_SAQUES, extrato, /):
         saldo -= valor
         extrato += f"Saque: R$ {valor:.2f}\n"
         numero_saques += 1
-        return saldo, extrato
+        return saldo, extrato, numero_saques
 
     else:
         print("Operação falhou! O valor informado é inválido.")
@@ -70,6 +70,7 @@ while True:
         if resultado:
             saldo = resultado[0]
             extrato = resultado[1]
+            numero_saques = resultado[2]
 
     elif opcao == "e":
         tirar_extrato(extrato=extrato, saldo=saldo)
