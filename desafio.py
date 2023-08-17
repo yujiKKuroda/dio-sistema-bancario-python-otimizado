@@ -9,7 +9,9 @@ menu = """
 
 => """
 
-users = []
+usuarios = []
+numero_conta = 0
+contas = []
 
 saldo = 0
 limite = 500
@@ -17,18 +19,26 @@ extrato = ""
 numero_saques = 0
 LIMITE_SAQUES = 3
 
-def criar_usuario(*, valor, users):
+def criar_usuario(*, valor, usuarios):
     nome = input("Digite o seu nome: ")
     data_de_nascimento = input("Digite a sua data de nascimento (formato: dd/mm/yyyy): ")
     endereco = input("Digite o seu endereço (logradouro, nº - bairro - cidade/sigla estado): ")
-    users.append({
+    usuarios.append({
         "Nome": nome,
         "Data de nascimento": data_de_nascimento,
         "CPF": valor,
         "Endereço": endereco
     })
     print(f"Usuário {valor} cadastrado com sucesso!")
-    return users
+    return usuarios
+
+def criar_conta(*, usuario, numero_conta, contas):
+    contas.append({
+        "Agência": "0001",
+        "Número da conta": numero_conta,
+        "Usuário": usuario
+    })
+    return contas
 
 def depositar(*, valor, saldo, extrato):
     if valor > 0:
@@ -76,16 +86,23 @@ while True:
 
     if opcao == "u":
         valor = input("Digite seu CPF (apenas números): ")
-        for user in users:
-            if user.get("CPF") == valor:
+        for usuario in usuarios:
+            if usuario.get("CPF") == valor:
                 print("Operação falhou! CPF já está cadastrado no sistema!")
                 break
         else:
-            users = criar_usuario(valor=valor, users=users)
-            print(users)
+            usuarios = criar_usuario(valor=valor, usuarios=usuarios)
 
     elif opcao == "a":
-        print()
+        valor = input("Digite seu CPF (apenas números): ")
+        for usuario in usuarios:
+            if usuario.get("CPF") == valor:
+                numero_conta += 1;
+                contas = criar_conta(usuario=usuario, numero_conta=numero_conta, contas=contas)
+                print(f"Conta criada com sucesso!")
+                break
+        else:
+            print("Operação falhou! CPF não existe!")
 
     elif opcao == "d":
         valor = float(input("Informe o valor do depósito: "))
